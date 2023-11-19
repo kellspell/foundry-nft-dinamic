@@ -11,17 +11,17 @@ contract MoodNft is ERC721 {
 
     // Storage Variables
     uint256 private s_tokenCounter;
-    string private s_splashSVGImageUri;
+    string private s_splashSVGImageUri ;
     string private s_splash2SVGImageUri;
 
     // On the constructor, we will pass the straight our two SVG files     
-    constructor(string memory splashSVG, string memory splash2SVG ) ERC721("GameMoodNft", "JStick") {
+    constructor(string memory splashSVGImageUri, string memory splash2SVGImageUri ) ERC721("GameMoodNft", "JStick") {
         s_splashSVGImageUri = splashSVGImageUri; 
         s_splash2SVGImageUri = splash2SVGImageUri; 
         s_tokenCounter = 0;}
 
     // I order to flip the SVGs images , I need to create a Enum for that 
-    enum SelectedImage {
+    enum SelectedImage { 
         splashSVGImageUri,
         splash2SVGImageUri
     }  
@@ -46,6 +46,17 @@ contract MoodNft is ERC721 {
         } else if (s_selectedImage[tokenId] == SelectedImage.splash2SVGImageUri) {
             return s_splash2SVGImageUri;
         }
+        // Down here we'll create a fanction that represents our SVG images
+            return 
+                string(
+                        abi.encodePacked(
+                            _base64(),
+                            base64.encode(
+                            bytes(
+                                abi.encodePacked('{"image": "', imageURI, '"}')  
+                            )               
+                        )
+                        )); 
     }
 
     // We need to create a function to enpacket our SVG images into Base64
@@ -53,16 +64,16 @@ contract MoodNft is ERC721 {
         return "data:application/json;base64,";
     }
 
-//     // Down here we'll create a fanction that represents our SVG images
-//     return 
-//       string(
-//     abi.encodePacked(
-//     _base64(),
-//         base64.encode(
-//             bytes(
-//                 abi.encodePacked('{"image": "', imageURI, '"}');
-//             )
-//         )
-//     )
-//     );    
+    // Down here we'll create a fanction that represents our SVG images
+    return 
+      string(
+    abi.encodePacked(
+    _base64(),
+        base64.encode(
+            bytes(
+                abi.encodePacked('{"image": "', imageURI, '"}');
+            )
+        )
+    )
+    );    
 }    
