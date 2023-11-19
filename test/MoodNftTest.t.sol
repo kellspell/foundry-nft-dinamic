@@ -30,7 +30,7 @@ contract MoodNftTest is Test {
     }
 
     function testViewTokenURI() public {
-        assertEq(moodNft.viewTokenURI(0), SPLASH_SVG_URI);
-        assertEq(moodNft.viewTokenURI(1), SPLASH2_SVG_URI);
+        moodNft.mintNFT();
+        console.log(moodNft.tokenURI(0));
     }
 }

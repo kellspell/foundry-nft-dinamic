@@ -32,48 +32,36 @@ contract MoodNft is ERC721 {
 
     // Now we will add a function to anybody to mint our NFTs  
     function mintNFT() public {
-        s_selectedImage = [s_tokenCounter] = SelectedImage.splashSVGImageUri;
         _safeMint(msg.sender, s_tokenCounter);
-
+        s_selectedImage [s_tokenCounter] = SelectedImage.splashSVGImageUri;
         // Here I'll need to explain it , our s_tokenCounter is set to 0 , everytime we mint a new NFT, we add 1 to it
         s_tokenCounter++;
     } 
 
+    // We need to create a function to enpacket our SVG images into Base64
+    function _baseURI() internal pure override returns (string memory) {
+        return "data:application/json;base64,";
+    }
+
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         string memory imageURI;
         if (s_selectedImage[tokenId] == SelectedImage.splashSVGImageUri) {
-            return s_splashSVGImageUri;
+            imageURI = s_splashSVGImageUri;
         } else if (s_selectedImage[tokenId] == SelectedImage.splash2SVGImageUri) {
-            return s_splash2SVGImageUri;
+            imageURI = s_splash2SVGImageUri;
         }
         // Down here we'll create a fanction that represents our SVG images
             return 
                 string(
                         abi.encodePacked(
-                            _base64(),
-                            base64.encode(
-                            bytes(
+                            _baseURI(),
+                            Base64.encode(
+                                bytes(
                                 abi.encodePacked('{"image": "', imageURI, '"}')  
-                            )               
+                                )              
+                            )
                         )
-                        )); 
+                ); 
     }
-
-    // We need to create a function to enpacket our SVG images into Base64
-    function _base64() internal pure override returns (string memory) {
-        return "data:application/json;base64,";
-    }
-
-    // Down here we'll create a fanction that represents our SVG images
-    return 
-      string(
-    abi.encodePacked(
-    _base64(),
-        base64.encode(
-            bytes(
-                abi.encodePacked('{"image": "', imageURI, '"}');
-            )
-        )
-    )
-    );    
+   
 }    
