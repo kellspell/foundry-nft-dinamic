@@ -14,8 +14,11 @@ contract MoodNft is ERC721 {
     string private s_splashSVGImageUri ;
     string private s_splash2SVGImageUri;
 
-    // On the constructor, we will pass the straight our two SVG files     
-    constructor(string memory splashSVGImageUri, string memory splash2SVGImageUri ) ERC721("GameMoodNft", "JStick") {
+    // Errors
+    error NFT__CantFlipIfNotOwner();
+
+    // On the constructor, we will pass the straight our two SVG files
+        constructor(string memory splashSVGImageUri, string memory splash2SVGImageUri ) ERC721("GameMoodNft", "JStick") {
         s_splashSVGImageUri = splashSVGImageUri; 
         s_splash2SVGImageUri = splash2SVGImageUri; 
         s_tokenCounter = 0;}
@@ -36,6 +39,25 @@ contract MoodNft is ERC721 {
         s_selectedImage [s_tokenCounter] = SelectedImage.splashSVGImageUri;
         // Here I'll need to explain it , our s_tokenCounter is set to 0 , everytime we mint a new NFT, we add 1 to it
         s_tokenCounter++;
+    }
+
+    function _isApprovedOrOwner(address sender, uint256 tokenId) internal view returns (bool) {
+    require(_ownerOf(tokenId) == sender || getApproved(tokenId) == sender, "Caller is not owner nor approved");
+    return true;
+    }
+
+
+    // Flipping the images
+    function flipNFT(uint256 tokenId) public {
+        // We only want the owner to be able to flip the images
+        if (!_isApprovedOrOwner(msg.sender, tokenId)) {
+            revert NFT__CantFlipIfNotOwner();
+        }
+        if (s_selectedImage[tokenId] == SelectedImage.splash2SVGImageUri) {
+            s_selectedImage[tokenId] = SelectedImage.splashSVGImageUri;
+        } else  { s_selectedImage[tokenId] = SelectedImage.splash2SVGImageUri;
+           
+        }
     } 
 
     // We need to create a function to enpacket our SVG images into Base64
