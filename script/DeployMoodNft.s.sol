@@ -2,13 +2,24 @@
 
 pragma solidity ^0.8.20;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {MoodNft} from "../src/MoodNft.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 
 contract DeployMoodNft is Script {
    function run() external returns (MoodNft) {
+      string memory splash = vm.readFile("./img/splash.svg");
+      string memory splash2 = vm.readFile("./img/splash2.svg");
+      console.log(splash);
+
+      vm.startBroadcast();
+      MoodNft moodNft = new MoodNft(
+      svgToImageURI(splash),
+      svgToImageURI(splash2));
+      vm.stopBroadcast();
+
+      return moodNft;
 
    }
     // The fucntion bellow will automatically convert svg image to base64 string
